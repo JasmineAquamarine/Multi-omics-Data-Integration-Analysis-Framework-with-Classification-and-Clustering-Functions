@@ -1,0 +1,97 @@
+pip install torch torchvision torchaudio pandas numpy scikit-learn tqdm optuna umap-learn matplotlib 
+
+
+
+
+python AE_run.py --path1 data/data3/rna.csv --path2 data/data3/atac.csv --label dummy.csv --mode 0 --device cpu --epoch 100 --a 0.6 --b 0.4
+
+
+pip install SNFpy
+
+python SNF.py --path data/data3/rna.csv data/data3/atac.csv --label dummy.csv --metric sqeuclidean --K 20 --mu 0.5
+
+
+
+第一步 AE_run.py
+
+python GCN_run.py --mode 0 -fd data/data1/final_integrated_latents.csv -ad data/data1/SNF_fused_matrix.csv -ld data/data1/label.csv -d gpu
+
+python GCN_run.py --mode 0 -fd data/data2/final_integrated_latents.csv -ad data/data2/SNF_fused_matrix.csv -ld data/data2/label.csv -d gpu
+
+python GCN_run.py --mode 0 -fd data/data3/final_integrated_latents.csv -ad data/data3/SNF_fused_matrix.csv -ld data/data3/label.csv -d gpu
+
+
+data3：
+
+python AE_run.py --path1 data/data3/rna.csv --path2 data/data3/atac.csv --label data/data3/label.csv --mode 0 --device cpu --epoch 200 --a 0.7 --b 0.3 --learningrate 0.0005  
+  KMeans 聚类评估结果：
+=== 聚类评估指标 ===
+ARI: 0.5805, NMI: 0.7518, AMI: 0.7486
+
+data2
+python AE_run.py --path1 data/data2/rna.csv --path2 data/data2/atac.csv --label data/data2/label.csv --mode 0 --device cpu --epoch 250 --a 0.6 --b 0.4 --learningrate 0.001
+KMeans 聚类评估结果：
+=== 聚类评估指标 ===
+ARI: 0.6252, NMI: 0.7978, AMI: 0.7966
+
+data1
+
+python AE_run.py --path1 data/data1/rna.csv --path2 data/data1/atac.csv --label data/data1/label.csv --device gpu --epoch 100
+=== 聚类评估指标 ===
+ARI: 0.9302, NMI: 0.8173, AMI: 0.8166
+
+第二部  SNF.py
+ python SNF.py --path data/data3/rna.csv data/data3/atac.csv --metric sqeuclidean --K 20
+ python SNF.py --path data/data2/rna.csv data/data2/atac.csv --metric sqeuclidean --K 20
+ python SNF.py --path data/data1/rna.csv data/data1/atac.csv --metric sqeuclidean --K 20
+
+
+第三部  GCN_run.py
+data1:
+Test set results: loss= 0.0010 Accuracy= 100.00% F1= 100.00% Precision= 100.00% Recall= 100.00%
+Mean ACC: 99.88%
+Mean F1: 99.88%
+Hyperparameter search results saved!
+Finished!
+总运行时间: 389.87 秒
+
+
+data2
+
+
+
+
+
+
+
+data3:
+Test set results: loss= 0.3328 Accuracy= 91.39% F1= 91.14% Precision= 91.40% Recall= 91.39%
+Mean ACC: 92.06%
+Mean F1: 91.95%
+Hyperparameter search results saved!
+Finished!
+总运行时间: 342.32 秒
+
+对比算法最好的效果	ARI    	          AMI   		  NMI     
+data1			77.5007		88.1416		88.1112
+data2			60.4			80.7		        76.989
+data3			61.031		 76.892		76.734
+
+				ACC			weighted-F1
+datal				99.79		99.6		
+data2			94.2			89.8		
+data3			91.5			90.6		
+
+
+
+目前跑到的效果		ARI    	         AMI   		  NMI
+datal				91.85		79.95		79.88
+data2			61.65		78.96		78.81
+data3			55.7364		74.6904		74.315
+
+
+				ACC			weighted-F1
+datal				99.8062		99.9021		
+data2			93 9363		93.781		
+data3			91.3916		91.1755		
+
